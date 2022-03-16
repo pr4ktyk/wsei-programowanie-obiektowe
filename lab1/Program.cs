@@ -57,6 +57,39 @@ namespace lab1
             {
                 Console.WriteLine($"{p.Value} {p.Currency};");
             }
+            Console.WriteLine();
+
+            Tank zbiornik = new Tank(50);
+            Console.WriteLine($"{zbiornik}");
+            zbiornik.refuel(15);
+            Console.WriteLine($"Tankowanie 15l\n{zbiornik}");
+            Tank zbiornik2 = new Tank(10);
+            Console.WriteLine($"zbiornik1: {zbiornik}; zbiornik2: {zbiornik2}");
+            zbiornik2.refuel(zbiornik, 5);
+            Console.WriteLine($"Zbiornik1  -- 5l --> Zbiornik2");
+            Console.WriteLine($"zbiornik1: {zbiornik}; zbiornik2: {zbiornik2}");
+            Console.WriteLine();
+            Student[] listOfStudents =
+            {
+                Student.Register("Małysz", "Adam", 3),
+                Student.Register("Pudzianowski", "Mariusz", 3),
+                Student.Register("Józef", "Piłsudski", 3),
+                Student.Register("Pudzianowski", "Krystian", 3),
+                Student.Register("Małysz", "Adam", 2),
+                Student.Register("Wojtyła", "Karol", 3),
+            };
+            Console.WriteLine("Przed sortowaniem:");
+            foreach (var student in listOfStudents)
+            {
+                Console.WriteLine(student);
+            }
+            Console.WriteLine();
+            Array.Sort(listOfStudents);
+            Console.WriteLine("Po sortowaniu:");
+            foreach (var student in listOfStudents)
+            {
+                Console.WriteLine(student);
+            }
         }
     }
 
@@ -235,6 +268,133 @@ namespace lab1
             }
 
             return result;
+        }
+    }
+
+    public class Tank
+    {
+        public readonly int Capacity;
+        private int _level;
+        public Tank(int capacity)
+        {
+            Capacity = capacity;
+        }
+        public int Level
+        {
+            get
+            {
+                return _level;
+            }
+            private set
+            {
+                if (value < 0 || value > Capacity)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+                _level = value;
+            }
+        }
+
+        public bool refuel(int amount)
+        {
+            if (amount < 0)
+            {
+                return false;
+            }
+            if (_level + amount > Capacity)
+            {
+                return false;
+            }
+            _level += amount;
+            return true;
+        }
+
+        public void refuelSecondMethod(int amount)
+        {
+            if (amount < 0)
+            {
+                throw new ArgumentException("Argument cant be non positive!");
+            }
+            if (_level + amount > Capacity)
+            {
+                throw new ArgumentException("Argument is to large!");
+            }
+            _level += amount;
+        }
+
+        public bool refuel(Tank sourceTank, int amount)
+        {
+            if (amount <= 0) return false;
+            if (sourceTank._level < amount) return false;
+            if (amount + _level > Capacity) return false;
+
+            sourceTank._level -= amount;
+            _level += amount;
+            return true;
+        }
+
+        public override string ToString()
+        {
+            return $"Tank: Capacity = {Capacity}, Level = {_level}";
+        }
+    }
+
+    class Student : IComparable<Student>
+    {
+            private string _nazwisko;
+            public string Nazwisko
+            {
+                get => _nazwisko;
+                set
+                {
+                    _nazwisko = value;
+                }
+            }
+
+        private string _imie;
+            public string Imie
+            {
+                get => _imie;
+                set
+                {
+                    _imie = value;
+                }
+            }
+
+            private decimal _srednia;
+            public decimal Srednia
+            {
+                get => _srednia;
+                set
+                {
+                    _srednia = value;
+                }
+            }
+
+        public Student(string nazwisko, string imie, decimal srednia)
+        {
+            _nazwisko = nazwisko;
+            _imie = imie;
+            _srednia = srednia;
+        }
+
+        public int CompareTo(Student other)
+        {
+            if (_nazwisko.CompareTo(other._nazwisko) == 0)
+            {
+                return (_imie.CompareTo(other._imie) == 0) ? _imie.CompareTo(other._imie) : _imie.CompareTo(other._imie);
+
+            } else return _nazwisko.CompareTo(other._nazwisko);
+        }
+
+        public static Student? Register(string _imie, string _nazwisko, decimal _srednia)
+        {
+            return new Student(_imie, _nazwisko, _srednia);
+        }
+
+        public override string ToString()
+        {
+            return $"Surname: {_nazwisko}; Name: {_imie}; Avg: {_srednia}";
         }
     }
 }
