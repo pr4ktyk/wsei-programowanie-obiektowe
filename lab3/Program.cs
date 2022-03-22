@@ -108,7 +108,6 @@ public class Exercise3
         for (int i = 0; i < elements.Length; i++)
         {
             var element = (elements[i], 0);
-
             foreach (var item in arr)
             {
                 if (item.Equals(elements[i]))
@@ -116,10 +115,8 @@ public class Exercise3
                     element.Item2++;
                 }
             }
-
             result[i] = element;
         }
-
         return result;
     }
 }
